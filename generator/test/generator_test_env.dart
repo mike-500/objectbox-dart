@@ -85,13 +85,14 @@ class GeneratorTestEnv {
   _commonModelTests(ModelInfo generatorModel, ModelInfo jsonModel) {
     // collect UIDs on all entities and properties
     final allUIDs = generatorModel.entities
-        .map((entity) => <int>[]
-          ..add(entity.id.uid)
-          ..addAll(entity.properties.map((prop) => prop.id.uid))
-          ..addAll(entity.properties
-              .where((prop) => prop.hasIndexFlag())
-              .map((prop) => prop.indexId!.uid))
-          ..addAll(entity.relations.map((rel) => rel.id.uid)))
+        .map((entity) => <int>[
+              entity.id.uid,
+              ...entity.properties.map((prop) => prop.id.uid),
+              ...entity.properties
+                  .where((prop) => prop.hasIndexFlag())
+                  .map((prop) => prop.indexId!.uid),
+              ...entity.relations.map((rel) => rel.id.uid)
+            ])
         .reduce((List<int> a, List<int> b) => a + b);
 
     expect(allUIDs.toSet().length, allUIDs.length,
